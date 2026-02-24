@@ -1,0 +1,56 @@
+name: GriefPreventionFlagsReborn
+version: '${version}'
+main: com.blockforge.griefpreventionflagsreborn.GriefPreventionFlagsPlugin
+api-version: '1.21'
+description: A comprehensive claim flags plugin with 130+ flags and an API for custom flags
+authors: [BlockForge]
+website: https://github.com/BlockForge
+depend: [GriefPrevention]
+softdepend: [PlaceholderAPI]
+
+commands:
+  claimflags:
+    description: Manage claim flags
+    aliases: [cf, gpfr]
+    usage: /<command> [set|unset|add|remove|info|list|schedule|server|world|admin|reload]
+    permission: gpfr.use
+
+permissions:
+  gpfr.use:
+    description: Basic flag viewing and setting in own claims
+    default: true
+  gpfr.gui:
+    description: Open the flag management GUI
+    default: true
+  gpfr.scope.server:
+    description: Set server-level flag defaults
+    default: op
+  gpfr.scope.world:
+    description: Set world-level flag defaults
+    default: op
+  gpfr.admin:
+    description: Access all admin commands
+    default: op
+    children:
+      gpfr.admin.reload: true
+      gpfr.admin.reset: true
+      gpfr.admin.migrate: true
+      gpfr.admin.debug: true
+  gpfr.admin.reload:
+    description: Reload plugin configuration
+    default: op
+  gpfr.admin.reset:
+    description: Reset all flags for a scope
+    default: op
+  gpfr.admin.migrate:
+    description: Migrate from old GPFlags
+    default: op
+  gpfr.admin.debug:
+    description: Debug flag resolution
+    default: op
+  gpfr.bypass.*:
+    description: Bypass all flag restrictions
+    default: op
+  gpfr.flag.admin.*:
+    description: Set admin-only flags
+    default: op

@@ -1,0 +1,19 @@
+# GriefPreventionFlagsReborn Configuration
+config-version: 1
+
+database:
+  file: "data.db"
+
+cache:
+  enabled: true
+  ttl-seconds: 30
+  max-size: 10000
+
+gui:
+  title: "<gradient:#7B2FF7:#FF5733>Claim Flags</gradient>"
+  flags-per-page: 28
+
+server-defaults: {}
+
+metrics: true
+debug: false

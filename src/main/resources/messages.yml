@@ -1,0 +1,51 @@
+# GriefPreventionFlagsReborn Messages
+# Uses MiniMessage formatting: https://docs.advntr.dev/minimessage/format.html
+
+# General
+prefix: "<dark_gray>[<gradient:#7B2FF7:#FF5733>ClaimFlags</gradient><dark_gray>]"
+no-permission: "<prefix> <red>You do not have permission to do that."
+player-only: "<prefix> <red>This command can only be used by players."
+reload-success: "<prefix> <green>Configuration and messages reloaded successfully."
+not-in-claim: "<prefix> <red>You must be standing in a GriefPrevention claim to do that."
+not-claim-owner: "<prefix> <red>You must be the owner of this claim or have admin permissions."
+not-trusted: "<prefix> <red>You do not have sufficient trust in this claim to manage flags."
+
+# Flag operations
+flag-set: "<prefix> <green>Flag <yellow><flag></yellow> has been set to <yellow><value></yellow> in <aqua><scope></aqua>."
+flag-unset: "<prefix> <green>Flag <yellow><flag></yellow> has been removed from <aqua><scope></aqua>."
+flag-not-found: "<prefix> <red>Unknown flag: <yellow><flag></yellow>. Use <yellow>/cf list</yellow> to see available flags."
+flag-invalid-value: "<prefix> <red>Invalid value <yellow><value></yellow> for flag <yellow><flag></yellow>. Expected: <yellow><expected></yellow>."
+
+# Flag list
+flag-list-header: "<prefix> <gold><bold>Flags for <aqua><scope></aqua></bold></gold>"
+flag-list-entry: "  <gray>- <yellow><flag></yellow>: <white><value></white> <dark_gray>(<gray><source></gray>)</dark_gray>"
+flag-list-empty: "<prefix> <gray>No flags are set in this scope."
+
+# List-type flag operations (add/remove entries)
+flag-added: "<prefix> <green>Added <yellow><entry></yellow> to flag <yellow><flag></yellow> in <aqua><scope></aqua>."
+flag-removed: "<prefix> <green>Removed <yellow><entry></yellow> from flag <yellow><flag></yellow> in <aqua><scope></aqua>."
+
+# Schedule operations
+schedule-set: "<prefix> <green>Schedule set for flag <yellow><flag></yellow>: <yellow><value></yellow> from <aqua><start></aqua> to <aqua><end></aqua>."
+schedule-removed: "<prefix> <green>Schedule removed for flag <yellow><flag></yellow> in <aqua><scope></aqua>."
+
+# GUI text
+gui-flag-enabled: "<green><bold>ENABLED</bold></green>"
+gui-flag-disabled: "<red><bold>DISABLED</bold></red>"
+gui-flag-click-toggle: "<gray>Click to toggle this flag."
+gui-flag-click-edit: "<gray>Click to edit this flag's value."
+gui-flag-shift-unset: "<gray>Shift-click to unset this flag."
+gui-flag-scope: "<dark_gray>Scope: <aqua><scope></aqua>"
+gui-flag-inherited: "<dark_gray>Inherited from: <yellow><source></yellow>"
+gui-prev-page: "<yellow><bold>\u00AB Previous Page</bold></yellow>"
+gui-next-page: "<yellow><bold>Next Page \u00BB</bold></yellow>"
+gui-page-info: "<gray>Page <white><current></white>/<white><total></white>"
+gui-category-all: "<gold><bold>All Flags</bold></gold>"
+
+# Admin
+admin-reset-success: "<prefix> <green>All flags for <aqua><scope></aqua> have been reset."
+admin-debug-header: "<prefix> <gold><bold>Flag Resolution Debug for <yellow><flag></yellow></bold></gold>"
+admin-debug-entry: "  <gray><scope></gray>: <white><value></white> <dark_gray>(priority: <yellow><priority></yellow>)</dark_gray>"
+
+# Enforcement
+flag-blocked-action: "<prefix> <red>This action is not allowed here."
