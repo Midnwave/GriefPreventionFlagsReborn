@@ -33,7 +33,8 @@ tasks {
     shadowJar {
         archiveClassifier.set("")
         relocate("org.bstats", "com.blockforge.griefpreventionflagsreborn.libs.bstats")
-        relocate("net.kyori", "com.blockforge.griefpreventionflagsreborn.libs.kyori")
+        // net.kyori is NOT relocated — Paper provides it natively and relocating it
+        // causes NoSuchMethodError when passing shaded Components to Paper's API.
     }
 
     jar {
