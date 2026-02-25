@@ -24,9 +24,11 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("org.jetbrains:annotations:26.0.1")
     implementation("org.bstats:bstats-bukkit:3.1.0")
-    implementation("net.kyori:adventure-text-minimessage:4.17.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.17.0")
-    implementation("net.kyori:adventure-api:4.17.0")
+    // Paper provides adventure natively — use compileOnly to avoid bundling
+    // old versions in the shadow JAR which would shadow Paper's newer classes
+    compileOnly("net.kyori:adventure-text-minimessage:4.17.0")
+    compileOnly("net.kyori:adventure-text-serializer-legacy:4.17.0")
+    compileOnly("net.kyori:adventure-api:4.17.0")
 }
 
 tasks {
