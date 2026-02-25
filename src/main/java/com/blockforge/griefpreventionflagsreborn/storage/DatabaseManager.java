@@ -92,14 +92,22 @@ public final class DatabaseManager {
     }
 
     /**
-     * Returns the active database connection.
+     * Returns the active database connection, reconnecting automatically if needed.
      *
      * @return the {@link Connection} instance
-     * @throws SQLException if the connection is null or closed
+     * @throws SQLException if the connection cannot be established
      */
     public Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
-            throw new SQLException("Database connection is not open. Call open() first.");
+            logger.info("Database connection was closed, reconnecting...");
+            File dbFile = new File(dataFolder, databaseFileName);
+            String url = "jdbc:sqlite:" + dbFile.getAbsolutePath();
+            connection = DriverManager.getConnection(url);
+            try (Statement stmt = connection.createStatement()) {
+                stmt.execute("PRAGMA journal_mode=WAL");
+                stmt.execute("PRAGMA foreign_keys=ON");
+            }
+            logger.info("Database reconnected successfully.");
         }
         return connection;
     }

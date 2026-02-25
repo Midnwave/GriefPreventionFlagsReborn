@@ -50,15 +50,17 @@ public final class FlagStorageManager {
     public String getValue(@NotNull String flagId, @NotNull FlagScope scope, @NotNull String scopeId) {
         String sql = "SELECT value FROM gpfr_flag_values WHERE flag_id = ? AND scope = ? AND scope_id = ?";
 
-        try (Connection conn = databaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, flagId);
-            ps.setString(2, scope.name());
-            ps.setString(3, scopeId);
+        try {
+            Connection conn = databaseManager.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, flagId);
+                ps.setString(2, scope.name());
+                ps.setString(3, scopeId);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("value");
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getString("value");
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -85,15 +87,17 @@ public final class FlagStorageManager {
                      "ON CONFLICT(flag_id, scope, scope_id) DO UPDATE SET value = excluded.value, " +
                      "set_by = excluded.set_by, set_at = excluded.set_at";
 
-        try (Connection conn = databaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, flagId);
-            ps.setString(2, scope.name());
-            ps.setString(3, scopeId);
-            ps.setString(4, value);
-            ps.setString(5, setBy != null ? setBy.toString() : null);
-            ps.setLong(6, System.currentTimeMillis());
-            ps.executeUpdate();
+        try {
+            Connection conn = databaseManager.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, flagId);
+                ps.setString(2, scope.name());
+                ps.setString(3, scopeId);
+                ps.setString(4, value);
+                ps.setString(5, setBy != null ? setBy.toString() : null);
+                ps.setLong(6, System.currentTimeMillis());
+                ps.executeUpdate();
+            }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Failed to set flag value: " + flagId + " [" + scope + ":" + scopeId + "] = " + value, e);
         }
@@ -109,12 +113,14 @@ public final class FlagStorageManager {
     public void removeValue(@NotNull String flagId, @NotNull FlagScope scope, @NotNull String scopeId) {
         String sql = "DELETE FROM gpfr_flag_values WHERE flag_id = ? AND scope = ? AND scope_id = ?";
 
-        try (Connection conn = databaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, flagId);
-            ps.setString(2, scope.name());
-            ps.setString(3, scopeId);
-            ps.executeUpdate();
+        try {
+            Connection conn = databaseManager.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, flagId);
+                ps.setString(2, scope.name());
+                ps.setString(3, scopeId);
+                ps.executeUpdate();
+            }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Failed to remove flag value: " + flagId + " [" + scope + ":" + scopeId + "]", e);
         }
@@ -132,14 +138,16 @@ public final class FlagStorageManager {
         String sql = "SELECT flag_id, value FROM gpfr_flag_values WHERE scope = ? AND scope_id = ?";
         Map<String, String> result = new LinkedHashMap<>();
 
-        try (Connection conn = databaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, scope.name());
-            ps.setString(2, scopeId);
+        try {
+            Connection conn = databaseManager.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, scope.name());
+                ps.setString(2, scopeId);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    result.put(rs.getString("flag_id"), rs.getString("value"));
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        result.put(rs.getString("flag_id"), rs.getString("value"));
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -159,16 +167,18 @@ public final class FlagStorageManager {
         String sql = "SELECT scope, scope_id, value FROM gpfr_flag_values WHERE flag_id = ? ORDER BY scope";
         List<FlagScopeEntry> result = new ArrayList<>();
 
-        try (Connection conn = databaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, flagId);
+        try {
+            Connection conn = databaseManager.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, flagId);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    FlagScope scope = FlagScope.valueOf(rs.getString("scope"));
-                    String scopeId = rs.getString("scope_id");
-                    String value = rs.getString("value");
-                    result.add(new FlagScopeEntry(scope, scopeId, value));
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        FlagScope scope = FlagScope.valueOf(rs.getString("scope"));
+                        String scopeId = rs.getString("scope_id");
+                        String value = rs.getString("value");
+                        result.add(new FlagScopeEntry(scope, scopeId, value));
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -187,12 +197,14 @@ public final class FlagStorageManager {
     public void clearScope(@NotNull FlagScope scope, @NotNull String scopeId) {
         String sql = "DELETE FROM gpfr_flag_values WHERE scope = ? AND scope_id = ?";
 
-        try (Connection conn = databaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, scope.name());
-            ps.setString(2, scopeId);
-            int deleted = ps.executeUpdate();
-            logger.info("Cleared " + deleted + " flag value(s) for scope " + scope + ":" + scopeId);
+        try {
+            Connection conn = databaseManager.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, scope.name());
+                ps.setString(2, scopeId);
+                int deleted = ps.executeUpdate();
+                logger.info("Cleared " + deleted + " flag value(s) for scope " + scope + ":" + scopeId);
+            }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Failed to clear scope: " + scope + ":" + scopeId, e);
         }

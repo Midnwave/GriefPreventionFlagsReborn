@@ -53,22 +53,24 @@ public final class ScheduleStorageManager {
         String sql = "INSERT INTO gpfr_schedules (flag_id, scope, scope_id, cron_expression, value, enabled, created_by, created_at) " +
                      "VALUES (?, ?, ?, ?, ?, 1, ?, ?)";
 
-        try (Connection conn = databaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, flagId);
-            ps.setString(2, scope.name());
-            ps.setString(3, scopeId);
-            ps.setString(4, cronExpr);
-            ps.setString(5, value);
-            ps.setString(6, createdBy != null ? createdBy.toString() : null);
-            ps.setLong(7, System.currentTimeMillis());
-            ps.executeUpdate();
+        try {
+            Connection conn = databaseManager.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, flagId);
+                ps.setString(2, scope.name());
+                ps.setString(3, scopeId);
+                ps.setString(4, cronExpr);
+                ps.setString(5, value);
+                ps.setString(6, createdBy != null ? createdBy.toString() : null);
+                ps.setLong(7, System.currentTimeMillis());
+                ps.executeUpdate();
 
-            try (ResultSet keys = ps.getGeneratedKeys()) {
-                if (keys.next()) {
-                    int id = keys.getInt(1);
-                    logger.info("Created schedule #" + id + " for flag " + flagId + " [" + scope + ":" + scopeId + "]");
-                    return id;
+                try (ResultSet keys = ps.getGeneratedKeys()) {
+                    if (keys.next()) {
+                        int id = keys.getInt(1);
+                        logger.info("Created schedule #" + id + " for flag " + flagId + " [" + scope + ":" + scopeId + "]");
+                        return id;
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -85,12 +87,14 @@ public final class ScheduleStorageManager {
     public void removeSchedule(int id) {
         String sql = "DELETE FROM gpfr_schedules WHERE id = ?";
 
-        try (Connection conn = databaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            int affected = ps.executeUpdate();
-            if (affected > 0) {
-                logger.info("Removed schedule #" + id);
+        try {
+            Connection conn = databaseManager.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, id);
+                int affected = ps.executeUpdate();
+                if (affected > 0) {
+                    logger.info("Removed schedule #" + id);
+                }
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Failed to remove schedule #" + id, e);
@@ -107,13 +111,15 @@ public final class ScheduleStorageManager {
     public void removeSchedulesForFlag(@NotNull String flagId, @NotNull FlagScope scope, @NotNull String scopeId) {
         String sql = "DELETE FROM gpfr_schedules WHERE flag_id = ? AND scope = ? AND scope_id = ?";
 
-        try (Connection conn = databaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, flagId);
-            ps.setString(2, scope.name());
-            ps.setString(3, scopeId);
-            int deleted = ps.executeUpdate();
-            logger.info("Removed " + deleted + " schedule(s) for flag " + flagId + " [" + scope + ":" + scopeId + "]");
+        try {
+            Connection conn = databaseManager.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, flagId);
+                ps.setString(2, scope.name());
+                ps.setString(3, scopeId);
+                int deleted = ps.executeUpdate();
+                logger.info("Removed " + deleted + " schedule(s) for flag " + flagId + " [" + scope + ":" + scopeId + "]");
+            }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Failed to remove schedules for flag: " + flagId + " [" + scope + ":" + scopeId + "]", e);
         }
@@ -130,19 +136,21 @@ public final class ScheduleStorageManager {
                      "FROM gpfr_schedules WHERE enabled = 1";
         List<ScheduleEntry> result = new ArrayList<>();
 
-        try (Connection conn = databaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                result.add(new ScheduleEntry(
-                    rs.getInt("id"),
-                    rs.getString("flag_id"),
-                    FlagScope.valueOf(rs.getString("scope")),
-                    rs.getString("scope_id"),
-                    rs.getString("cron_expression"),
-                    rs.getString("value"),
-                    rs.getInt("enabled") == 1
-                ));
+        try {
+            Connection conn = databaseManager.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    result.add(new ScheduleEntry(
+                        rs.getInt("id"),
+                        rs.getString("flag_id"),
+                        FlagScope.valueOf(rs.getString("scope")),
+                        rs.getString("scope_id"),
+                        rs.getString("cron_expression"),
+                        rs.getString("value"),
+                        rs.getInt("enabled") == 1
+                    ));
+                }
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Failed to get active schedules", e);
